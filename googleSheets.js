@@ -10,6 +10,20 @@ function resolveCredentialsPath() {
   return cachedCredentialsPath;
 }
 
+function getCredentials() {
+  // For Vercel: use environment variable
+  if (process.env.GOOGLE_CREDENTIALS_JSON) {
+    try {
+      return JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+    } catch (error) {
+      console.error('Failed to parse GOOGLE_CREDENTIALS_JSON:', error);
+    }
+  }
+
+  // For local: use file
+  return resolveCredentialsPath();
+}
+
 function stripQuotes(value) {
   if (!value) {
     return value;
@@ -135,10 +149,21 @@ export async function uploadToGoogleSheet({
     throw new Error('Missing GOOGLE_SHEETS_ID. Please set it in your .env file.');
   }
 
-  const auth = new google.auth.GoogleAuth({
-    keyFile: resolveCredentialsPath(),
+  const credentials = getCredentials();
+
+  const authConfig = {
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
+  };
+
+  // If credentials is a string (file path), use keyFile
+  // If it's an object (parsed JSON), use credentials directly
+  if (typeof credentials === 'string') {
+    authConfig.keyFile = credentials;
+  } else {
+    authConfig.credentials = credentials;
+  }
+
+  const auth = new google.auth.GoogleAuth(authConfig);
 
   const client = await auth.getClient();
   const sheets = google.sheets({ version: 'v4', auth: client });

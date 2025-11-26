@@ -15,6 +15,10 @@ GOOGLE_SHEETS_ID=your_spreadsheet_id_here
 GOOGLE_SHEETS_RANGE=DailyTop!A1
 GOOGLE_SHEETS_CATEGORY_RANGE=CategoryTop!A1
 
+# Google Service Account Credentials (IMPORTANT!)
+# Copy the ENTIRE contents of your credentials.json file as a single-line JSON string
+GOOGLE_CREDENTIALS_JSON={"type":"service_account","project_id":"...","private_key":"..."}
+
 # Pipeline Configuration
 PIPELINE_MIN_RATE=10
 PIPELINE_MIN_COMMISSION=60
@@ -29,81 +33,116 @@ PIPELINE_CATEGORY_TAB_LIMIT=20
 CRON_SECRET=your_random_secret_here
 ```
 
-## Google Service Account Setup
+## Setting Up Google Credentials in Vercel
 
-1. Upload your Google Service Account JSON file to Vercel as a secret
-2. The credentials file should be accessible at runtime
-3. Make sure the service account has edit access to your Google Sheet
+**Method 1: Copy JSON as Environment Variable (Recommended)**
 
-**Option 1: Store as environment variable (recommended)**
-- Convert JSON to base64: `cat credentials.json | base64`
-- Set as env var: `GOOGLE_CREDENTIALS_BASE64=<base64_string>`
-- Decode in code before use
+1. Open your `credentials.json` file
+2. Copy the ENTIRE contents (it should be a single line or minified JSON)
+3. In Vercel Dashboard → Your Project → Settings → Environment Variables
+4. Add new variable:
+   - **Name**: `GOOGLE_CREDENTIALS_JSON`
+   - **Value**: Paste the entire JSON content
+   - Make sure it's valid JSON (starts with `{` and ends with `}`)
 
-**Option 2: Use Vercel's file system**
-- Note: Vercel serverless functions have read-only filesystem except `/tmp`
-- You'll need to write credentials to `/tmp` at runtime
+**Method 2: Minify JSON First**
+
+If your credentials file is multi-line, minify it first:
+```bash
+# On Windows PowerShell:
+Get-Content credentials.json | ConvertFrom-Json | ConvertTo-Json -Compress
+
+# Or use an online JSON minifier
+```
+
+Then paste the minified result into Vercel.
 
 ## Deployment Steps
 
-1. **Install Vercel CLI** (if not already installed):
+1. **Push to GitHub** (if not done):
    ```bash
-   npm i -g vercel
+   git add .
+   git commit -m "Update for Vercel deployment"
+   git push
    ```
 
-2. **Login to Vercel**:
+2. **Deploy to Vercel**:
    ```bash
-   vercel login
+   vercel --prod
    ```
 
-3. **Deploy**:
+3. **Set Environment Variables**:
+   - Go to https://vercel.com/dashboard
+   - Select your project
+   - Go to Settings → Environment Variables
+   - Add all variables listed above
+   - **IMPORTANT**: Add `GOOGLE_CREDENTIALS_JSON` with your service account JSON
+
+4. **Redeploy** (after adding env vars):
    ```bash
-   vercel
+   vercel --prod
    ```
-
-4. **Set Environment Variables**:
-   - Go to your project settings on Vercel dashboard
-   - Navigate to "Environment Variables"
-   - Add all required variables listed above
-
-5. **Enable Cron Jobs**:
-   - Cron jobs are automatically enabled via `vercel.json`
-   - The cron will run at midnight (00:00 UTC) daily
-   - Adjust timezone in `vercel.json` if needed
 
 ## Testing the Cron Endpoint
 
-You can manually trigger the cron job:
+Test manually:
 
 ```bash
 curl https://your-project.vercel.app/api/cron
 ```
 
-Or with authentication (if CRON_SECRET is set):
-
-```bash
-curl -H "Authorization: Bearer YOUR_CRON_SECRET" https://your-project.vercel.app/api/cron
+Expected success response:
+```json
+{
+  "message": "Success",
+  "fetched": 495,
+  "filtered": 100
+}
 ```
-
-## Important Notes
-
-- **Execution Time**: Vercel has a 60-second timeout for serverless functions on Hobby plan
-- **Adjust MAX_PAGES**: If the function times out, reduce `PIPELINE_MAX_PAGES` in environment variables
-- **Monitoring**: Check Vercel logs to see cron execution results
-- **Cold Starts**: First execution may be slower due to cold start
 
 ## Troubleshooting
 
-### Function Timeout
-- Reduce `PIPELINE_MAX_PAGES` to 3 or lower
-- Reduce `PIPELINE_LIMIT` to 30 or lower
+### Error: "ENOENT: no such file or directory, open '/var/task/service-account.json'"
+**Solution**: You need to set `GOOGLE_CREDENTIALS_JSON` environment variable in Vercel.
 
-### Google Sheets API Error
-- Verify service account has edit permissions
-- Check that GOOGLE_SHEETS_ID is correct
-- Ensure credentials are properly loaded
+### Error: "Failed to parse GOOGLE_CREDENTIALS_JSON"
+**Solution**: Make sure the JSON is valid and properly escaped. It should be a single-line JSON string.
+
+### Function Timeout
+**Solution**: Reduce `PIPELINE_MAX_PAGES` to 3 or lower in environment variables.
 
 ### No Products Fetched
+**Solution**: 
 - Check Shopee API credentials in `shopeeApi.js`
-- Verify network connectivity from Vercel
-- Check Vercel function logs for detailed errors
+- Verify the API is accessible from Vercel's servers
+- Check function logs in Vercel dashboard
+
+## Cron Schedule
+
+The cron runs at **midnight UTC** daily. To change:
+
+Edit `vercel.json`:
+```json
+{
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 17 * * *"  // 5 PM UTC = Midnight Bangkok (UTC+7)
+    }
+  ]
+}
+```
+
+## Monitoring
+
+View execution logs:
+1. Go to Vercel Dashboard
+2. Select your project
+3. Click "Logs" or "Functions"
+4. Filter by `/api/cron`
+
+## Important Notes
+
+- Vercel free tier: 60-second timeout
+- Cron jobs on free tier: Limited invocations
+- Consider upgrading for production use
