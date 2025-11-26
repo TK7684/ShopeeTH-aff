@@ -1,0 +1,29 @@
+{
+  "name": "shopee-product-analyzer",
+  "version": "1.0.0",
+  "description": "Tool to fetch and filter Shopee products by commission rate",
+  "main": "fetchProducts.js",
+  "type": "module",
+  "scripts": {
+    "schedule": "node autoPipeline.js",
+    "auto": "node autoPipeline.js --once",
+    "test": "node testApi.js",
+    "fetch": "node fetchProducts.js",
+    "analyze": "node analyzeProducts.js",
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "googleapis": "^133.0.0",
+    "node-cron": "^3.0.3"
+  },
+  "keywords": [
+    "shopee",
+    "affiliate",
+    "commission"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+

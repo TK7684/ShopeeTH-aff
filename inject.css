@@ -1,0 +1,22 @@
+.sai-offer-box {
+    margin-top: 12px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #fff8e1;
+    color: #333;
+    font-size: 15px;
+    border: 1px solid #ffe082;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    max-width: 400px;
+    word-break: break-all;
+  }
+  .sai-offer-box table {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+  }
+  .sai-offer-box td {
+    padding: 2px 5px;
+    vertical-align: top;
+  }
+  

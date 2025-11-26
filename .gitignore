@@ -1,0 +1,10 @@
+node_modules/
+*.log
+npm-debug.log*
+.env
+products.json
+filtered_products.json
+.DS_Store
+credentials.json
+*.json.bak
+.vercel
