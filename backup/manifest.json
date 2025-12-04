@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Shopee Product Offer Info",
+  "version": "1.1",
+  "description": "Show Shopee affiliate product offer info under product price.",
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://shopee.co.th/*",
+  "https://open-api.affiliate.shopee.co.th/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://shopee.co.th/*"],
+      "js": ["content.js"],
+      "css": ["inject.css"]
+    }
+  ]
+}

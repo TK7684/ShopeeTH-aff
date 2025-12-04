@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopee Product Commission Analyzer</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #ee4d2d;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #ee4d2d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #d93815;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ee4d2d;
+        }
+
+        .results {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-height: 100px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .products-table th {
+            background-color: #f5f5f5;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #ee4d2d;
+        }
+
+        .products-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .products-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .products-table img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .badge-low {
+            background-color: #66bb6a;
+        }
+
+        .badge-medium {
+            background-color: #ffa726;
+        }
+
+        .badge-high {
+            background-color: #ef5350;
+        }
+
+        .product-link {
+            color: #ee4d2d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .product-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>Shopee Product Commission Analyzer</h1>
+            <p class="subtitle">Find high-commission products to maximize your affiliate earnings</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <div class="filter-controls">
+                <div class="form-group">
+                    <label for="minCommissionRate">Min Commission Rate (%)</label>
+                    <input type="number" id="minCommissionRate" min="0" max="100" step="0.1" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="maxCommissionRate">Max Commission Rate (%)</label>
+                    <input type="number" id="maxCommissionRate" min="0" max="100" step="0.1" value="100">
+                </div>
+                <div class="form-group">
+                    <label for="minPrice">Min Price (฿)</label>
+                    <input type="number" id="minPrice" min="0" step="1" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="maxPrice">Max Price (฿)</label>
+                    <input type="number" id="maxPrice" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="minSellerRate">Min Seller Rate (%)</label>
+                    <input type="number" id="minSellerRate" min="0" max="100" step="0.1" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="sortBy">Sort By</label>
+                    <select id="sortBy">
+                        <option value="commissionRate">Commission Rate</option>
+                        <option value="price">Price</option>
+                        <option value="sales">Sales</option>
+                        <option value="commission">Commission</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sortOrder">Sort Order</label>
+                    <select id="sortOrder">
+                        <option value="desc">Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="limit">Results Limit</label>
+                    <input type="number" id="limit" min="1" max="1000" step="10" value="100">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="fetchButton" type="button">🔄 Fetch Products</button>
+                <button id="loadButton" type="button" onclick="loadProducts()">📋 Load Products</button>
+                <button id="filterButton" type="button" onclick="applyFilters()">🔍 Apply Filters</button>
+                <button id="resetButton" type="button" onclick="resetFilters()">🔄 Reset Filters</button>
+            </div>
+        </div>
+
+        <div id="stats" class="stats"></div>
+        <div id="results" class="results">
+            <div class="loading">Welcome! Click "Fetch Products" to get the latest products from Shopee, or "Load
+                Products" to view existing data.</div>
+        </div>
+    </div>
+
+    <script>
+        // Client-side logging utility
+        const logger = {
+            info: (message, data) => {
+                console.log(`[INFO] ${message}`, data ? JSON.stringify(data, null, 2) : "");
+            },
+            error: (message, error) => {
+                console.error(`[ERROR] ${message}`, error);
+            },
+            warn: (message, data) => {
+                console.warn(
+                    `[WARN] ${message}`,
+                    data ? JSON.stringify(data, null, 2) : "",
+                );
+            },
+        };
+
+        // API client with detailed logging
+        const apiClient = {
+            // Get products
+            async getProducts(file = "products.json") {
+                logger.info("Fetching products", { file });
+                try {
+                    const response = await fetch(`/api/products?file=${file}`);
+                    logger.info("Products response", {
+                        status: response.status,
+                        statusText: response.statusText,
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        logger.error("Failed to load products", errorData);
+                        throw new Error(
+                            errorData.error || `HTTP error! status: ${response.status}`,
+                        );
+                    }
+
+                    const products = await response.json();
+                    logger.info("Products loaded successfully", { count: products.length });
+                    return products;
+                } catch (error) {
+                    logger.error("Error in getProducts", error);
+                    throw error;
+                }
+            },
+
+            // Filter products
+            async filterProducts(filters) {
+                logger.info("Filtering products", filters);
+                try {
+                    const response = await fetch("/api/filter", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(filters),
+                    });
+
+                    logger.info("Filter response", {
+                        status: response.status,
+                        statusText: response.statusText,
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        logger.error("Failed to filter products", errorData);
+                        throw new Error(
+                            errorData.error || `HTTP error! status: ${response.status}`,
+                        );
+                    }
+
+                    const data = await response.json();
+                    logger.info("Products filtered successfully", {
+                        totalMatches: data.totalMatches,
+                        returned: data.products.length,
+                    });
+                    return data;
+                } catch (error) {
+                    logger.error("Error in filterProducts", error);
+                    throw error;
+                }
+            },
+
+            // Fetch products from Shopee
+            async fetchProducts(options = {}) {
+                logger.info("Fetching products from Shopee", options);
+                try {
+                    const response = await fetch("/api/fetch", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(options),
+                    });
+
+                    logger.info("Fetch response", {
+                        status: response.status,
+                        statusText: response.statusText,
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        logger.error("Failed to fetch products from Shopee", errorData);
+                        throw new Error(
+                            errorData.error || `HTTP error! status: ${response.status}`,
+                        );
+                    }
+
+                    const data = await response.json();
+                    logger.info("Products fetched from Shopee successfully", data);
+                    return data;
+                } catch (error) {
+                    logger.error("Error in fetchProducts", error);
+                    throw error;
+                }
+            },
+        };
+
+        // DOM elements
+        const resultsDiv = document.getElementById("results");
+        const statsDiv = document.getElementById("stats");
+        const fetchButton = document.getElementById("fetchButton");
+        // Function to fetch products from Shopee API
+        async function fetchProducts() {
+            logger.info("fetchProducts called");
+            resultsDiv.innerHTML =
+                '<div class="loading">⏳ Fetching products from Shopee...</div>';
+            try {
+                const data = await apiClient.fetchProducts();
+                resultsDiv.innerHTML = `<div class="loading">✅ Successfully fetched ${data.count} products. Click "Load Products" to continue.</div>`;
+                return data;
+            } catch (error) {
+                logger.error("Error in fetchProducts", error);
+                resultsDiv.innerHTML = `<div class="error">❌ Error fetching products: ${error.message}</div>`;
+                throw error;
+            }
+        }
+
+        if (fetchButton) {
+            fetchButton.addEventListener("click", async () => {
+                await fetchProducts();
+            });
+        }
+
+        // Load products function with detailed logging
+        async function loadProducts() {
+            logger.info("loadProducts called");
+            resultsDiv.innerHTML = '<div class="loading">⏳ Loading products...</div>';
+
+            try {
+                logger.info("Attempting to load products from API");
+                const allProducts = await apiClient.getProducts();
+                resultsDiv.innerHTML = `<div class="loading">✅ Loaded ${allProducts.length} products. Click "Apply Filters" to see results.</div>`;
+                return allProducts;
+            } catch (error) {
+                logger.error("Error loading products", error);
+                resultsDiv.innerHTML = `<div class="error">❌ Error: ${error.message}. Make sure you've run "Fetch Products" first.</div>`;
+                return [];
+            }
+        }
+
+        // Apply filters function with client-side logic
+        async function applyFilters() {
+            logger.info("applyFilters called");
+
+            let allProducts = [];
+
+            // Check if we have products loaded
+            if (window.allProducts && window.allProducts.length > 0) {
+                logger.info("Using already loaded products");
+                allProducts = window.allProducts;
+            } else {
+                logger.info("Loading products before filtering");
+                allProducts = await loadProducts();
+                window.allProducts = allProducts;
+            }
+
+            if (allProducts.length === 0) {
+                logger.warn("No products available for filtering");
+                return;
+            }
+
+            resultsDiv.innerHTML = '<div class="loading">⏳ Filtering products...</div>';
+
+            const filters = {
+                minCommissionRate:
+                    parseFloat(document.getElementById("minCommissionRate").value) || 0,
+                maxCommissionRate:
+                    parseFloat(document.getElementById("maxCommissionRate").value) || 100,
+                minPrice: parseFloat(document.getElementById("minPrice").value) || 0,
+                maxPrice: document.getElementById("maxPrice").value
+                    ? parseFloat(document.getElementById("maxPrice").value)
+                    : Infinity,
+                minSellerRate:
+                    parseFloat(document.getElementById("minSellerRate").value) || 0,
+                sortBy: document.getElementById("sortBy").value,
+                sortOrder: document.getElementById("sortOrder").value,
+                limit: parseInt(document.getElementById("limit").value) || 100,
+            };
+
+            logger.info("Filter parameters", filters);
+
+            try {
+                // Client-side filtering
+                console.time("Client Filtering");
+
+                let filtered = allProducts.filter(p => {
+                    const commissionRate = (p.commissionRate || 0) * 100;
+                    const sellerRate = (p.sellerCommissionRate || 0) * 100;
+                    const shopeeRate = (p.shopeeCommissionRate || 0) * 100;
+                    const price = p.price || 0;
+
+                    return commissionRate >= filters.minCommissionRate &&
+                        commissionRate <= filters.maxCommissionRate &&
+                        sellerRate >= filters.minSellerRate &&
+                        price >= filters.minPrice &&
+                        price <= filters.maxPrice;
+                });
+
+                // Sorting
+                filtered.sort((a, b) => {
+                    let aVal, bVal;
+                    switch (filters.sortBy) {
+                        case 'commissionRate':
+                            aVal = (a.commissionRate || 0) * 100;
+                            bVal = (b.commissionRate || 0) * 100;
+                            break;
+                        case 'price':
+                            aVal = a.price || 0;
+                            bVal = b.price || 0;
+                            break;
+                        case 'commission':
+                            aVal = a.commission || 0;
+                            bVal = b.commission || 0;
+                            break;
+                        case 'sales':
+                            aVal = a.sales || 0;
+                            bVal = b.sales || 0;
+                            break;
+                        case 'name':
+                            aVal = (a.name || '').toLowerCase();
+                            bVal = (b.name || '').toLowerCase();
+                            // String comparison needs different handling
+                            if (filters.sortOrder === 'desc') return bVal.localeCompare(aVal);
+                            return aVal.localeCompare(bVal);
+                        default:
+                            aVal = (a.commissionRate || 0) * 100;
+                            bVal = (b.commissionRate || 0) * 100;
+                    }
+
+                    if (filters.sortBy === 'name') return 0; // Already handled
+
+                    return filters.sortOrder === 'desc' ? bVal - aVal : aVal - bVal;
+                });
+
+                // Statistics
+                const totalMatches = filtered.length;
+                const stats = {
+                    total: totalMatches,
+                    averageCommissionRate: totalMatches > 0
+                        ? (filtered.reduce((sum, p) => sum + (p.commissionRate || 0), 0) / totalMatches * 100).toFixed(2)
+                        : 0,
+                    highestCommissionRate: totalMatches > 0
+                        ? (Math.max(...filtered.map(p => p.commissionRate || 0)) * 100).toFixed(2)
+                        : 0,
+                    averagePrice: totalMatches > 0
+                        ? (filtered.reduce((sum, p) => sum + (p.price || 0), 0) / totalMatches).toFixed(2)
+                        : 0
+                };
+
+                // Limit results
+                const limited = filtered.slice(0, filters.limit);
+
+                console.timeEnd("Client Filtering");
+
+                const data = {
+                    products: limited,
+                    stats,
+                    totalMatches
+                };
+
+                displayResults(data);
+            } catch (error) {
+                logger.error("Error applying filters", error);
+                resultsDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Display results function
+        function displayResults(data) {
+            logger.info("displayResults called", { total: data.total });
+            const { products, stats } = data;
+
+            // Display statistics
+            statsDiv.style.display = "grid";
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Matches</h3>
+                    <div class="value">${stats.total}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Commission Rate</h3>
+                    <div class="value">${stats.averageCommissionRate}%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Highest Rate</h3>
+                    <div class="value">${stats.highestCommissionRate}%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Price</h3>
+                    <div class="value">${parseFloat(stats.averagePrice).toLocaleString()} ฿</div>
+                </div>
+            `;
+
+            if (products.length === 0) {
+                resultsDiv.innerHTML =
+                    '<div class="no-results">No products match your filters. Try adjusting your criteria.</div>';
+                return;
+            }
+
+            // Display products table
+            let html = `
+                <h2 style="margin: 30px 0 20px 0;">📦 Products (${products.length})</h2>
+                <div style="overflow-x: auto;">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Product Name</th>
+                                <th>Commission Rate</th>
+                                <th>Seller Rate</th>
+                                <th>Shopee Rate</th>
+                                <th>Price</th>
+                                <th>Commission</th>
+                                <th>Sales</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            products.forEach((product) => {
+                const commissionRate = (product.commissionRate || 0) * 100;
+                const sellerRate = (product.sellerCommissionRate || 0) * 100;
+                const shopeeRate = (product.shopeeCommissionRate || 0) * 100;
+
+                let badgeClass = "badge-low";
+                if (commissionRate >= 10) badgeClass = "badge-high";
+                else if (commissionRate >= 5) badgeClass = "badge-medium";
+
+                html += `
+                    <tr>
+                        <td><img src="${product.imageUrl || ''}" alt="${product.name}" onerror="this.style.display='none'"></td>
+                        <td><strong>${product.name || "N/A"}</strong></td>
+                        <td><span class="badge ${badgeClass}">${commissionRate.toFixed(2)}%</span></td>
+                        <td>${sellerRate.toFixed(2)}%</td>
+                        <td>${shopeeRate.toFixed(2)}%</td>
+                        <td>${(product.price || 0).toLocaleString()} ฿</td>
+                        <td>${(product.commission || 0).toLocaleString()} ฿</td>
+                        <td>${(product.sales || 0).toLocaleString()}</td>
+                        <td><a href="${product.productLink || '#'}" target="_blank" class="product-link">View →</a></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+            logger.info("Results displayed successfully");
+        }
+
+        // Reset filters function
+        function resetFilters() {
+            logger.info("resetFilters called");
+            document.getElementById("minCommissionRate").value = 0;
+            document.getElementById("maxCommissionRate").value = 100;
+            document.getElementById("minPrice").value = 0;
+            document.getElementById("maxPrice").value = "";
+            document.getElementById("minSellerRate").value = 0;
+            document.getElementById("sortBy").value = "commissionRate";
+            document.getElementById("sortOrder").value = "desc";
+            document.getElementById("limit").value = 100;
+        }
+
+        // Initialize app
+        window.addEventListener("load", () => {
+            logger.info("App initialized");
+            // Don't automatically load products on page load
+            // Users should click "Load Products" or "Fetch Products" explicitly
+        });
+    </script>
+</body>
+
+</html>

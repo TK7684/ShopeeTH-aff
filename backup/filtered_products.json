@@ -1,0 +1,117 @@
+[
+  {
+    "name": "Merry Plant Protein โปรตีนพืช 5 ชนิด: สูตรสร้างกล้ามเนื้อ โปรตีน 35 กรัม D-Ribose นำเข้าจาก USA",
+    "commissionRate": 0.315,
+    "sellerCommissionRate": 0.3,
+    "shopeeCommissionRate": 0.015,
+    "commission": 217.98,
+    "price": 692,
+    "priceMax": 904,
+    "priceMin": 692,
+    "itemId": 20279735555,
+    "shopId": 665834081,
+    "shopName": "The Merry Life",
+    "categoryIds": [
+      100001,
+      100002,
+      100005
+    ],
+    "sales": 3089,
+    "ratingStar": 4.9,
+    "imageUrl": "https://cf.shopee.co.th/file/th-11134207-7rasl-m84hgt37qjy4e5",
+    "productLink": "https://shopee.co.th/product/665834081/20279735555",
+    "offerLink": "https://s.shopee.co.th/9fDLXADJOK"
+  },
+  {
+    "name": "CIVAGO （17oz/510ml）แก้วน้ําฉนวนสุญญากาศพร้อมหลอดแก้วกาแฟเซรามิกความจุขนาดใหญ่สําหรับนักเรียนเด็ก",
+    "commissionRate": 0.215,
+    "sellerCommissionRate": 0.2,
+    "shopeeCommissionRate": 0.015,
+    "commission": 85.57,
+    "price": 398,
+    "priceMax": 398,
+    "priceMin": 398,
+    "itemId": 41355631942,
+    "shopId": 1217575210,
+    "shopName": "CIVAGO Official Store",
+    "categoryIds": [
+      100636,
+      100718,
+      101241
+    ],
+    "sales": 92,
+    "ratingStar": 5,
+    "imageUrl": "https://cf.shopee.co.th/file/sg-11134201-7ra1d-mbf5yrx8c6wl51",
+    "productLink": "https://shopee.co.th/product/1217575210/41355631942",
+    "offerLink": "https://s.shopee.co.th/3VciBqReYd"
+  },
+  {
+    "name": "Civago（13oz）แก้วกาแฟสแตนเลสสีม่วงพร้อมฝาปิดกระติกน้ําสูญญากาศแก้วน้ําร้อนและเย็น",
+    "commissionRate": 0.215,
+    "sellerCommissionRate": 0.2,
+    "shopeeCommissionRate": 0.015,
+    "commission": 62.135,
+    "price": 289,
+    "priceMax": 289,
+    "priceMin": 289,
+    "itemId": 27469048728,
+    "shopId": 1217575210,
+    "shopName": "CIVAGO Official Store",
+    "categoryIds": [
+      100636,
+      100718,
+      101241
+    ],
+    "sales": 30,
+    "ratingStar": 4.9,
+    "imageUrl": "https://cf.shopee.co.th/file/cn-11134207-7r98o-lzt3m0sr28pue5",
+    "productLink": "https://shopee.co.th/product/1217575210/27469048728",
+    "offerLink": "https://s.shopee.co.th/1qUUCmXzwT"
+  },
+  {
+    "name": "WINK WHITE ASTAXANTHIN แอสต้าแซนทิน 6 มก. นำเข้าจากยุโรป 🇨🇿 (1 กระปุก 30 แคปซูล)",
+    "commissionRate": 0.165,
+    "sellerCommissionRate": 0.15,
+    "shopeeCommissionRate": 0.015,
+    "commission": 62.7,
+    "price": 380,
+    "priceMax": 990,
+    "priceMin": 380,
+    "itemId": 24979513387,
+    "shopId": 939658291,
+    "shopName": "Wink White Authoriized Store",
+    "categoryIds": [
+      100001,
+      100002,
+      100004
+    ],
+    "sales": 2202,
+    "ratingStar": 4.9,
+    "imageUrl": "https://cf.shopee.co.th/file/th-11134207-7ras9-m9pmjo2m6ij38f",
+    "productLink": "https://shopee.co.th/product/939658291/24979513387",
+    "offerLink": "https://s.shopee.co.th/1qUUClY3hR"
+  },
+  {
+    "name": "Wink White Fiber Jelly เจลลี่ไฟเบอร์ 4 สูตร 1 กล่อง 5 ซอง",
+    "commissionRate": 0.165,
+    "sellerCommissionRate": 0.15,
+    "shopeeCommissionRate": 0.015,
+    "commission": 62.7,
+    "price": 380,
+    "priceMax": 990,
+    "priceMin": 380,
+    "itemId": 27024776751,
+    "shopId": 939658291,
+    "shopName": "Wink White Authoriized Store",
+    "categoryIds": [
+      100001,
+      100002,
+      100003
+    ],
+    "sales": 439,
+    "ratingStar": 4.9,
+    "imageUrl": "https://cf.shopee.co.th/file/th-11134207-7rask-m8rcxjhak9nyd0",
+    "productLink": "https://shopee.co.th/product/939658291/27024776751",
+    "offerLink": "https://s.shopee.co.th/9zqBvmC2iU"
+  }
+]

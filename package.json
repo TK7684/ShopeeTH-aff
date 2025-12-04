@@ -1,0 +1,43 @@
+{
+  "name": "shopee-product-analyzer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "node scripts/run-tests.js",
+    "test:run": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:api": "node scripts/run-tests.js --api-only",
+    "test:unit": "node scripts/run-tests.js --unit-only",
+    "test:integration": "node scripts/run-tests.js --integration-only",
+    "test:coverage": "node scripts/run-tests.js --coverage",
+    "test:all": "vitest run test/unit test/api test/integration",
+    "verify:font": "node scripts/verify-font.js",
+    "open:test-font": "open test-font.html"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "googleapis": "^144.0.0",
+    "nuxt": "^3.15.3",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@pinia/testing": "^1.0.3",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/vue": "^8.1.0",
+    "@types/node": "^22.10.2",
+    "@vitest/ui": "^4.0.14",
+    "happy-dom": "^20.0.11",
+    "jsdom": "^27.0.1",
+    "nitropack": "^2.12.4",
+    "pinia": "^3.0.4",
+    "supertest": "^7.1.4",
+    "vitest": "^4.0.14",
+    "vue-router": "^4.6.3"
+  }
+}

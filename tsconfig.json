@@ -1,0 +1,23 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "esModuleInterop": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"]
+    },
+    "types": ["@nuxt/types", "@nuxt/schema", "@types/node"]
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.vue", "**/*.js"],
+  "exclude": ["node_modules", ".nuxt", "dist"]
+}
